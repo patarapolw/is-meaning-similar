@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>is-meaning-similar? Chain Game</title>
+
+    <style>
+      body {
+        max-width: 1000px;
+        margin: 1em auto;
+      }
+
+      textarea,
+      input {
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea name="" id="" cols="100" rows="10"></textarea>
+    <button type="button" id="submit">Submit</button>
+
+    <div id="output">
+      <template>
+        <blockquote>
+          <main></main>
+          <input type="text" />
+        </blockquote>
+      </template>
+    </div>
+
+    <script>
+      const elTextarea = document.querySelector("textarea");
+      const elSubmit = document.querySelector("button#submit");
+
+      const elOutput = document.querySelector("#output");
+      const elTemplate = elOutput.querySelector("template");
+
+      let lines = [];
+      let line_i = 0;
+
+      elSubmit.addEventListener("click", () => {
+        lines = elTextarea.value
+          .split("\n")
+          .map((s) => s.trim())
+          .filter((s) => s);
+
+        line_i = 0;
+        nextLine();
+      });
+
+      function nextLine() {
+        const ln = lines[line_i++];
+        if (!ln) return;
+
+        const block = elTemplate.content.cloneNode(true);
+
+        const elMain = block.querySelector("main");
+        elMain.innerText = ln;
+
+        const elMeaning = block.querySelector("input");
+
+        elOutput.append(block);
+
+        elMeaning.focus();
+        elMeaning.addEventListener("keypress", (ev) => {
+          if (ev.key !== "Enter") return;
+
+          const meaning = elMeaning.value;
+          const url =
+            "/" +
+            "?p1=ja:" +
+            encodeURIComponent(ln) +
+            "&p2=" +
+            encodeURIComponent(meaning);
+
+          const interval = setInterval(() => {
+            elMeaning.value += ".";
+          }, 1000);
+
+          fetch(url)
+            .then(async (response) => {
+              const data = await response.json();
+              if (data.is_similar === true) {
+                elMeaning.style.backgroundColor = "lightgreen";
+                nextLine();
+              } else if (data.is_similar === false) {
+                elMeaning.style.backgroundColor = "lightcoral";
+              } else {
+                elMeaning.style.backgroundColor = "yellow";
+                nextLine();
+              }
+            })
+            .catch((e) => (meaning.value += e))
+            .finally(() => {
+              clearInterval(interval);
+              elMeaning.value = meaning;
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

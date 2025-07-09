@@ -47,13 +47,11 @@ Prefix the phrases with `zh:` for Chinese, or `ja:` for Japanese to specify the 
 
 ### Anki Integration
 
-Use the provided [anki-template.html](anki-template.html) as a custom card template. It sends the user's input to the server and colors the input box based on similarity.
+Use the provided [anki-template.html](/anki-template.html) as a custom card template. It sends the user's input to the server and colors the input box based on similarity.
 
-## Files
+### Website demo
 
-- [`server.py`](/server.py): HTTP server implementation.
-- [`is_meaning_similar.py`](/is_meaning_similar.py): Semantic similarity logic.
-- [`anki-template.html`](/anki-template.html): Anki card template for web integration.
+Just run the server and open <http://localhost:35026/> in your browser to see the demo interface.
 
 ## Configuration
 

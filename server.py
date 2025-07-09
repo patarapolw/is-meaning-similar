@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 import os
 from urllib.parse import urlparse, parse_qs
 import json
@@ -8,7 +8,7 @@ from is_meaning_similar import is_meaning_similar
 
 # creating a class for handling
 # basic Get and Post Requests
-class GFG(BaseHTTPRequestHandler):
+class GFG(SimpleHTTPRequestHandler):
 
     # creating a function for Get Request
     def do_GET(self):
@@ -18,12 +18,13 @@ class GFG(BaseHTTPRequestHandler):
 
         print(p1, p2)
         if not p1 or not p2:
-            self.wfile.write(
-                json.dumps(
-                    {"error": "Both parameters p1 and p2 are required."}
-                ).encode()
-            )
-            return
+            if self.path == "/favicon.ico":
+                self.send_response(200)
+                return
+            if self.path == "/":
+                self.path = "/chain.html"
+
+            return SimpleHTTPRequestHandler.do_GET(self)
 
         # Run the similarity check
         similarity, is_similar = is_meaning_similar(p1, p2)
@@ -50,7 +51,7 @@ class GFG(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "*")
         self.send_header("Access-Control-Allow-Headers", "*")
-        BaseHTTPRequestHandler.end_headers(self)
+        SimpleHTTPRequestHandler.end_headers(self)
 
 
 port = int(os.getenv("PORT", "35026"))
