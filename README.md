@@ -1,6 +1,6 @@
 # is-meaning-similar
 
-A simple HTTP server and web interface to check if two phrases have similar meanings using a multilingual sentence transformer model.
+A simple HTTP server to check if two phrases have similar meanings using a multilingual sentence transformer model. Also with [example Anki integration.](/anki-template.html)
 
 ## Features
 
@@ -30,9 +30,11 @@ A simple HTTP server and web interface to check if two phrases have similar mean
 pipenv run python server.py
 ```
 
-The server will start on [http://localhost:35026](http://localhost:35026) by default.
+The server will start on `http://localhost:35026` by default.
 
 ### API
+
+Prefix the phrases with `zh:` for Chinese, or `ja:` for Japanese to specify the language. If no prefix is provided, the app will attempt to detect the language automatically.
 
 - **Endpoint:** `GET /?p1=<phrase1>&p2=<phrase2>`
 - **Response:**
@@ -49,9 +51,9 @@ Use the provided [anki-template.html](anki-template.html) as a custom card templ
 
 ## Files
 
-- [`server.py`](server.py): HTTP server implementation.
-- [`is_meaning_similar.py`](is_meaning_similar.py): Semantic similarity logic.
-- [`anki-template.html`](anki-template.html): Anki card template for web integration.
+- [`server.py`](/server.py): HTTP server implementation.
+- [`is_meaning_similar.py`](/is_meaning_similar.py): Semantic similarity logic.
+- [`anki-template.html`](/anki-template.html): Anki card template for web integration.
 
 ## Configuration
 
@@ -62,7 +64,7 @@ You can override defaults with environment variables:
 - `PARAPHRASE_IS_SIMILAR`: Similarity threshold for "similar" (default: 0.7)
 - `PARAPHRASE_IS_DIFFERENT`: Similarity threshold for "different" (default: 0.5)
 
-### 🔹 Recommended Models
+### Recommended Models
 
 | Model                                   | Size    | Notes                           |
 | --------------------------------------- | ------- | ------------------------------- |
@@ -70,13 +72,7 @@ You can override defaults with environment variables:
 | `distiluse-base-multilingual-cased-v2`  | \~230MB | Higher quality, slower          |
 | `sentence-transformers/LaBSE`           | \~1.2GB | Very accurate, by Google        |
 
-📌 These can compare:
-
-* Japanese ↔ Chinese
-* Japanese ↔ English
-* Chinese ↔ English
-
-## ✅ Typical Cosine Scores (for same meaning)
+## Typical Cosine Scores (for same meaning)
 
 | Pair     | Score (Expected) |
 | -------- | ---------------- |

@@ -1,4 +1,4 @@
-<input type="text" name="" id="meaning" />
+<input type="text" id="meaning" />
 
 <script>
   var elMeaning = document.querySelector("input#meaning");
@@ -14,6 +14,10 @@
       "&p2=" +
       encodeURIComponent(meaning);
 
+    const interval = setInterval(() => {
+      elMeaning.value += ".";
+    }, 1000);
+
     fetch(url)
       .then(async (response) => {
         const data = await response.json();
@@ -25,6 +29,10 @@
           elMeaning.style.backgroundColor = "yellow";
         }
       })
-      .catch((e) => (meaning.value = e));
+      .catch((e) => (meaning.value += e))
+      .finally(() => {
+        clearInterval(interval);
+        elMeaning.value = meaning;
+      });
   };
 </script>
