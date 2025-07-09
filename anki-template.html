@@ -1,0 +1,30 @@
+<input type="text" name="" id="meaning" />
+
+<script>
+  var elMeaning = document.querySelector("input#meaning");
+
+  elMeaning.onkeypress = async function (ev) {
+    if (ev.key !== "Enter") return;
+
+    const meaning = elMeaning.value;
+    const url =
+      "http://localhost:35026/" +
+      "?p1=ja:" +
+      encodeURIComponent("{{Japanese}}") +
+      "&p2=" +
+      encodeURIComponent(meaning);
+
+    fetch(url)
+      .then(async (response) => {
+        const data = await response.json();
+        if (data.is_similar === true) {
+          elMeaning.style.backgroundColor = "lightgreen";
+        } else if (data.is_similar === false) {
+          elMeaning.style.backgroundColor = "lightcoral";
+        } else {
+          elMeaning.style.backgroundColor = "yellow";
+        }
+      })
+      .catch((e) => (meaning.value = e));
+  };
+</script>
