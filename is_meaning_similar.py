@@ -21,10 +21,10 @@ def is_meaning_similar(p1: str, p2: str):
         os.getenv("PARAPHRASE_MODEL", "paraphrase-multilingual-MiniLM-L12-v2")
     )
 
-    emb_jp = model.encode(p1, convert_to_tensor=True)
-    emb_zh = model.encode(p2, convert_to_tensor=True)
+    emb_p1 = model.encode(p1, convert_to_tensor=True)
+    emb_p2 = model.encode(p2, convert_to_tensor=True)
 
-    similarity = util.cos_sim(emb_jp, emb_zh).item()
+    similarity = util.cos_sim(emb_p1, emb_p2).item()
     is_similar = None
     if similarity > float(os.getenv("PARAPHRASE_IS_SIMILAR", 0.7)):
         is_similar = True

@@ -1,21 +1,25 @@
 <input type="text" id="meaning" />
 
 <script>
+  // the default input field is #typeans
   var elMeaning = document.querySelector("input#meaning");
 
-  elMeaning.onkeypress = async function (ev) {
+  function checkMeaningListener(ev) {
     if (ev.key !== "Enter") return;
 
     const meaning = elMeaning.value;
     const url =
       "http://localhost:35026/" +
-      "?p1=ja:" +
-      encodeURIComponent("{{Japanese}}") +
+      "?p1=" +
+      // or kanji:{Kanji}, hanzi:{Hanzi}, ja:{JP}, zh:{ZH}
+      encodeURIComponent("{{Japanese}}({{Reading}})") +
       "&p2=" +
       encodeURIComponent(meaning);
 
+    let value = meaning;
     const interval = setInterval(() => {
-      elMeaning.value += ".";
+      value += ".";
+      elMeaning.value = value;
     }, 1000);
 
     fetch(url)
@@ -33,6 +37,14 @@
       .finally(() => {
         clearInterval(interval);
         elMeaning.value = meaning;
+
+        // AnkiConnect API to show back side
+        fetch("http://localhost:8765", {
+          method: "POST",
+          body: JSON.stringify({ action: "guiShowAnswer", version: 6 }),
+        });
       });
-  };
+  }
+
+  elMeaning.onkeypress = checkMeaningListener;
 </script>
